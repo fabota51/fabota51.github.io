@@ -1,4 +1,3 @@
-- pong window
 - cnc
 - battel bot
 - lagerdetect
