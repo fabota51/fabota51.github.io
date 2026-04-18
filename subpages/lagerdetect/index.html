@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lagerdetect — Fabota51</title>
+  <link rel="stylesheet" href="../../css/style.css"/>
+  <script src="../../components/include.js" defer></script>
+  <style>
+    .subpage-content { grid-template-columns: 1fr !important; }
+    .subpage-body { max-width: 100%; }
+    .subpage-images { grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)) !important; }
+  </style>
+</head>
+<body>
+
+<div data-include="../../components/nav.html"></div>
+
+<div class="subpage-hero">
+  <img class="subpage-hero-img" src="../../images/lagerdetect.png" alt="Lagerdetect Lagererkennung"/>
+  <div class="subpage-hero-overlay"></div>
+  <div class="subpage-hero-content">
+    <a href="/#archive" class="subpage-back">
+      <span class="subpage-back-arrow">←</span> Zurück zu Projekte
+    </a>
+    <span class="subpage-eyebrow">Computervision / Raspberry Pi / YOLO</span>
+    <h1 class="subpage-title">Lagerdetect</h1>
+  </div>
+</div>
+
+<div class="subpage-content">
+  <div class="subpage-meta">
+    <span class="subpage-tag">Python</span>
+    <span class="subpage-tag">YOLOv11</span>
+    <span class="subpage-tag">Raspberry Pi</span>
+    <span class="subpage-tag">Computervision</span>
+    <span class="subpage-date">2025</span>
+  </div>
+
+  <div class="subpage-body">
+
+    <p>
+      <a href="https://github.com/fabota51/LagerDetectv3" style="color: #007bff;">Lagerdetect</a> ist ein Projekt, das ich 2025 wärhrend eins Praktikums als Erweiterung des Bestehenden LagerPi gestartet habe. Ziel war es, das <a href="https://github.com/Maksiom30/LagerDetectV2" style="color: #007bff;">Bestehende system</a> wieder zum laufen zu bringen/verbessern. 
+      Das System besteht aus einem Raspberry Pi mit angeschlossener Kamera,
+      der regelmäßig Fotos von den Getränkekisten macht und Flaschen auf den Bildern erkennt. Anschließend, 
+       zählt er sie und zeigt die Ergebnisse auf einer lokalen Website im Netzwerk.
+
+    </p>
+
+
+    <!-- ── Schritt 1 ── -->
+    <h3 style="margin-top:2rem; color: var(--accent, #fff); font-size:1rem; letter-spacing:.1em; text-transform:uppercase;">
+      <span style="opacity:.4; margin-right:.5rem;">01</span> Bestandsaufnahme
+    </h3>
+    <p>
+      Der ursprüngliche Raspberry Pi 4 ließ sich nicht mehr starten – keine SSH-Verbindung, kein Bild am Monitor,
+      keine Reaktion auf verschiedene SD-Karten mit unterschiedlichen Betriebssystemen. Die LEDs zeigten
+      zwar Strom und SD-Erkennung, aber kein Boot. Diagnose: Hardware-Defekt. Lösung: ein funktionierender
+      Raspberry Pi 3B+ wurde bereitgestellt.
+    </p>
+    <div class="subpage-images">
+      <img src="/subpages/lagerdetect/images/1.jpg" alt="Lagerdetect Übersicht"/>
+
+    </div>
+
+    <!-- ── Schritt 2 & 3 ── -->
+    <h3 style="margin-top:2rem; color: var(--accent, #fff); font-size:1rem; letter-spacing:.1em; text-transform:uppercase;">
+      <span style="opacity:.4; margin-right:.5rem;">02</span> Setup & Entwicklungsumgebung
+    </h3>
+    <p>
+      Betriebssystem installiert, SSH direkt im Raspberry Pi Imager aktiviert. Auf dem Pi: VS Code Server und Git.
+      Auf der lokalen Maschine: VS Code mit SSH-Extension. Damit war Remote-Entwicklung, Repo klonen und
+      Pushen direkt vom Pi aus möglich – kein Bildschirm am Pi nötig.
+    </p>
+
+
+    <!-- ── Schritt 4 ── -->
+    <h3 style="margin-top:2rem; color: var(--accent, #fff); font-size:1rem; letter-spacing:.1em; text-transform:uppercase;">
+      <span style="opacity:.4; margin-right:.5rem;">03</span> LagerPi v2 wieder zum Laufen bringen
+    </h3>
+    <p>
+      Das bestehende GitHub-Repo auf den neuen Pi geklont, Pfade angepasst. Website startete, aber ohne
+      Kamerabilder. Ursache: fehlende Einträge in <code style="background:#111;padding:2px 6px;border-radius:3px;">boot/firmware/config.txt</code>.
+      Nach der Korrektur lieferte die Kamera Bilder und die Seite zeigte den aktuellen Lagerbestand.
+    </p>
+    <div class="subpage-images">
+      <img src="/subpages/lagerdetect/images/5.jpg" alt="Lagerdetect Übersicht"/>
+
+    </div>
+
+    <!-- ── Schritt 5 ── -->
+    <h3 style="margin-top:2rem; color: var(--accent, #fff); font-size:1rem; letter-spacing:.1em; text-transform:uppercase;">
+      <span style="opacity:.4; margin-right:.5rem;">04</span> Erkennung verbessern
+    </h3>
+    <p>
+      Das alte System erkannte bei guten Lichtverhältnissen 113 Flaschen, bei Dunkelheit nur 12 – zu unzuverlässig.
+      Entscheidung: Umstieg auf <strong>YOLOv11s</strong> (small, wegen limitierter Pi-Ressourcen).
+      Da kein passendes vortrainiertes Modell für Flaschenkappen existierte, habe ich auf
+      Roboflow mehrere Datensätze kombiniert. Die Label-Formate der verschiedenen Quellen
+      (unterschiedliche Klassennamen, leere Flaschen, verschiedene Getränkesorten) habe ich mit
+      einem eigenen Skript vereinheitlicht. Ergebnis: ein Megadatensatz mit <strong>2.300 gelabelten Bildern</strong>,
+      die ich einmal manuell auf offensichtliche Fehler geprüft habe.
+    </p>
+    <div class="subpage-images">
+      <img src="/subpages/lagerdetect/images/25.png" alt="Lagerdetect Übersicht"/>
+      <img src="/subpages/lagerdetect/images/22.png" alt="Lagerdetect Übersicht"/>
+
+    </div>
+
+    <!-- ── Schritt 6 ── -->
+    <h3 style="margin-top:2rem; color: var(--accent, #fff); font-size:1rem; letter-spacing:.1em; text-transform:uppercase;">
+      <span style="opacity:.4; margin-right:.5rem;">05</span> Training & Integration
+    </h3>
+    <p>
+      Training auf dem Laptop, parallel dazu Integration ins System. Problem: Die Erkennungsfunktion lief
+      bei jeder HTTP-Anfrage – Ladezeit 36 Sekunden. Lösung: Ergebnisse cachen, Modell einmalig beim
+      ersten <code style="background:#111;padding:2px 6px;border-radius:3px;">GET /</code> laden und im RAM halten.
+      Hinzugefügt: manueller Auslöse-Button und eine zeitgesteuerte automatische Erkennung.
+      Die Tabelle zeigt pro Getränkekiste ein Bild und den Namen. Das alte Übersichtsbild
+      wurde durch ein Diagramm ersetzt, das die Werte der letzten Scans visualisiert.
+    </p>
+
+    <div class="subpage-images">
+      <img src="/subpages/lagerdetect/images/23.jpg" alt="Lagerdetect Übersicht"/>
+      <img src="/subpages/lagerdetect/images/12.png" alt="Lagerdetect Übersicht"/>
+  
+    </div>
+
+    <!-- ── Schritt 7 ── -->
+    <h3 style="margin-top:2rem; color: var(--accent, #fff); font-size:1rem; letter-spacing:.1em; text-transform:uppercase;">
+      <span style="opacity:.4; margin-right:.5rem;">06</span> Settings-Seite
+    </h3>
+    <p>
+      Die Settings-Seite wurde in drei Bereiche aufgeteilt: Kisten definieren, Kisten-Einstellungen und Alarm.
+      Eigene API-Endpoints für das Abrufen und Ändern der Kisten-Konfiguration. Alarm-Funktion: bei
+      Unterschreiten eines definierten Flaschenschwellenwerts wird automatisch eine Benachrichtigung ausgelöst.
+      Kistenpositionen können direkt im Bild auf der Settings-Seite per Mausklick markiert und gespeichert
+      werden – kein externes Tool mehr nötig.
+    </p>
+    <div class="subpage-images">
+      <img src="/subpages/lagerdetect/images/21.png" alt="Lagerdetect Übersicht"/>
+    </div>
+    <!-- ── Fazit ── -->
+    <h3 style="margin-top:2rem; color: var(--accent, #fff); font-size:1rem; letter-spacing:.1em; text-transform:uppercase;">
+      <span style="opacity:.4; margin-right:.5rem;">07</span> Fazit
+    </h3>
+    <p>
+      Das System erkennt zuverlässig Flaschen und stellt die Ergebnisse auf einer
+      lokalen Website dar. Neben Computervision und YOLO habe ich Remote-Entwicklung mit SSH vertieft.
+    </p>
+    <div class="subpage-images">
+      <img src="/subpages/lagerdetect/images/24.png" alt="Lagerdetect Übersicht"/>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     BILDER HINZUFÜGEN
+     Lege Bilder in den Ordner: subpages/lagerdetect/images/
+     Dann einfach eine neue Zeile nach dem Muster unten kopieren:
+     <img src="images/DATEINAME.jpg" alt="Kurze Beschreibung"/>
+     ══════════════════════════════════════════════ -->
+<div class="subpage-images">
+
+  <!-- Zeile kopieren und Dateiname + Alt-Text anpassen: -->
+  <!-- <img src="images/DATEINAME.jpg" alt="Beschreibung"/> -->
+
+</div>
+
+<div data-include="../../components/footer.html"></div>
+
+</body>
+</html>
