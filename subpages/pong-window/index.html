@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pong Window — Fabota51</title>
+  <link rel="stylesheet" href="../../css/style.css"/>
+  <script src="../../components/include.js" defer></script>
+  <style>
+    .subpage-content { grid-template-columns: 1fr !important; }
+    .subpage-body { max-width: 100%; }
+    .subpage-images { grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)) !important; }
+  </style>
+</head>
+<body>
+
+<div data-include="../../components/nav.html"></div>
+
+<div class="subpage-hero">
+  <img class="subpage-hero-img" src="../../images/pong-window.png" alt="Pong Window Vorschau"/>
+  <div class="subpage-hero-overlay"></div>
+  <div class="subpage-hero-content">
+    <a href="/#archive" class="subpage-back">
+      <span class="subpage-back-arrow">←</span> Zurück zu Projekte
+    </a>
+    <span class="subpage-eyebrow">Python / Tkinter / OOP</span>
+    <h1 class="subpage-title">Pong Window</h1>
+  </div>
+</div>
+
+<div class="subpage-content">
+  <div class="subpage-meta">
+    <span class="subpage-tag">Python</span>
+    <span class="subpage-tag">Tkinter</span>
+    <span class="subpage-tag">OOP</span>
+    <span class="subpage-tag">Klassen &amp; Vererbung</span>
+    <span class="subpage-date">2026</span>
+  </div>
+
+  <div class="subpage-body">
+
+    <p>
+      <a href="https://github.com/fabota51/Pong_With_Tabs" style="color: #007bff;">Pong Window</a> ist eine ungewöhnliche Variante des klassischen Pong-Spiels –
+      mit einem entscheidenden Unterschied: Die Spielobjekte sind echte Betriebssystemfenster.
+      Schläger und Ball existieren nicht als gezeichnete Formen auf einem Canvas, sondern als
+      eigenständige <code style="background:#111;padding:2px 6px;border-radius:3px;">tkinter</code>-Fenster,
+      die sich über den Bildschirm bewegen. Das Projekt entstand, um objektorientierte
+      Programmierung in Python – besonders Klassen und Vererbung – praxisnah zu verstehen.
+    </p>
+
+    <!-- ── Schritt 1 ── -->
+    <h3 style="margin-top:2rem; color: var(--accent, #fff); font-size:1rem; letter-spacing:.1em; text-transform:uppercase;">
+      <span style="opacity:.4; margin-right:.5rem;">01</span> Die Idee
+    </h3>
+    <p>
+      Beim Lernen von OOP stellt sich schnell die Frage: Wie macht man Klassen wirklich greifbar?
+      Die Antwort war: Spielobjekte, die man buchstäblich sehen und anfassen kann. Statt einen Ball
+      auf einem Canvas zu zeichnen, bekommt jedes Spielelement sein eigenes Fenster – mit eigenem
+      Zustand, eigener Logik und eigenem Verhalten. Pong bot sich als Vorlage an, weil die
+      Spielmechanik einfach genug ist, um den Fokus auf die Struktur des Codes zu legen.
+    </p>
+
+    <!-- ── Schritt 2 ── -->
+    <h3 style="margin-top:2rem; color: var(--accent, #fff); font-size:1rem; letter-spacing:.1em; text-transform:uppercase;">
+      <span style="opacity:.4; margin-right:.5rem;">02</span> Klassen &amp; Vererbung
+    </h3>
+    <p>
+      Im Mittelpunkt steht die Basisklasse <code style="background:#111;padding:2px 6px;border-radius:3px;">basewindow</code>,
+      die das grundlegende Verhalten eines Fensters kapselt: Position, Größe sowie Methoden zum Verschieben
+      (<code style="background:#111;padding:2px 6px;border-radius:3px;">place_window_at()</code>) und
+      Auslesen (<code style="background:#111;padding:2px 6px;border-radius:3px;">get_pos()</code>) der
+      aktuellen Koordinaten. Die Klassen <code style="background:#111;padding:2px 6px;border-radius:3px;">player</code> und
+      <code style="background:#111;padding:2px 6px;border-radius:3px;">ball</code> erben von
+      <code style="background:#111;padding:2px 6px;border-radius:3px;">basewindow</code>
+      und erweitern sie um spielspezifische Logik – <code style="background:#111;padding:2px 6px;border-radius:3px;">player</code>
+      reagiert auf Tastatureingaben und bewegt den Schläger, <code style="background:#111;padding:2px 6px;border-radius:3px;">ball</code>
+      folgt einem Richtungsvektor und prüft Kollisionen. Eine separate Klasse
+      <code style="background:#111;padding:2px 6px;border-radius:3px;">game</code> verwaltet das Hauptfenster,
+      alle Spielobjekte und die Punkteanzeige.
+      Dieses Muster machte den Unterschied zwischen theoretischem Vererbungsverständnis und
+      praktischer Anwendung sehr konkret spürbar.
+    </p>
+
+    <!-- ── Schritt 3 ── -->
+    <h3 style="margin-top:2rem; color: var(--accent, #fff); font-size:1rem; letter-spacing:.1em; text-transform:uppercase;">
+      <span style="opacity:.4; margin-right:.5rem;">03</span> Spiellogik &amp; Fensterverwaltung
+    </h3>
+    <p>
+      Die Kollisionserkennung läuft komplett über Bildschirmkoordinaten: Da kein gemeinsamer Canvas existiert,
+      holt <code style="background:#111;padding:2px 6px;border-radius:3px;">ball.update_move()</code>
+      via <code style="background:#111;padding:2px 6px;border-radius:3px;">get_pos()</code> die
+      <code style="background:#111;padding:2px 6px;border-radius:3px;">(x, y, w, h)</code>-Werte beider Schläger
+      und prüft direkt, ob sich die Rechtecke überschneiden. Die Spielschleife läuft über
+      <code style="background:#111;padding:2px 6px;border-radius:3px;">after(20, self.main)</code> –
+      alle 20 ms (50 FPS) werden Positionen aktualisiert, Kollisionen geprüft und bei Bedarf Punkte vergeben,
+      ohne dass ein eigener Thread benötigt wird.
+    </p>
+
+    <!-- ── Fazit ── -->
+    <h3 style="margin-top:2rem; color: var(--accent, #fff); font-size:1rem; letter-spacing:.1em; text-transform:uppercase;">
+      <span style="opacity:.4; margin-right:.5rem;">04</span> Fazit
+    </h3>
+    <p>
+      Pong Window hat Klassen und Vererbung auf eine Art greifbar gemacht. Den Ball als eigenständiges Objekt mit eigenem Fenster, eigenem Zustand
+      und eigenem Verhalten zu sehen, hat das Konzept der Kapselung direkt erfahrbar gemacht.
+      Ein kleines Projekt mit einem großen Lerneffekt.
+    </p>
+    <div class="subpage-images">
+      <img src="/subpages/pong-window/images/1.png" alt="Pong Window Übersicht"/>
+
+    </div>
+
+  </div>
+</div>
+
+<div data-include="../../components/footer.html"></div>
+
+</body>
+</html>
