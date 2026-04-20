@@ -1,6 +1,5 @@
 - cnc
 - battel bot
-- lagerdetect
 - homeassistand tie
 - meleniumfalke
 - storage
@@ -9,5 +8,4 @@
 - drone
 - spieleautomat
 - cozyhost
-- infinity store
 - unity

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>InfinityStoreLib — Fabota51</title>
+  <link rel="stylesheet" href="../../css/style.css"/>
+  <script src="../../components/include.js" defer></script>
+  <style>
+    .subpage-content { grid-template-columns: 1fr !important; }
+    .subpage-body { max-width: 100%; }
+    .code-block {
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 6px;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      font-family: monospace;
+      font-size: .85rem;
+      line-height: 1.6;
+      color: #ccc;
+    }
+    .code-block .kw  { color: #c792ea; }
+    .code-block .fn  { color: #82aaff; }
+    .code-block .st  { color: #c3e88d; }
+    .code-block .cm  { color: #546e7a; }
+  </style>
+</head>
+<body>
+
+<div data-include="../../components/nav.html"></div>
+
+<div class="subpage-hero">
+  <img class="subpage-hero-img" src="../../images/InfinityStorage.png" alt="InfinityStoreLib Vorschau"/>
+  <div class="subpage-hero-overlay"></div>
+  <div class="subpage-hero-content">
+    <a href="/#archive" class="subpage-back">
+      <span class="subpage-back-arrow">←</span> Zurück zu Projekte
+    </a>
+    <span class="subpage-eyebrow">Python / Library / Discord / Open Source</span>
+    <h1 class="subpage-title">InfinityStoreLib</h1>
+  </div>
+</div>
+
+<div class="subpage-content">
+  <div class="subpage-meta">
+    <span class="subpage-tag">Python</span>
+    <span class="subpage-tag">Library</span>
+    <span class="subpage-tag">Discord</span>
+    <span class="subpage-tag">AES-Verschlüsselung</span>
+    <span class="subpage-tag">Open Source</span>
+    <span class="subpage-date">2025</span>
+  </div>
+
+  <div class="subpage-body">
+
+    <p>
+      InfinityStoreLib ist eine Python-Bibliothek, die Discord-Webhooks als verschlüsselten Cloud-Speicher
+      nutzbar macht – direkt aus eigenem Code heraus. Entstanden aus den Erkenntnissen von
+      <a href="/subpages/InfinityStorage/" style="color:#82aaff;">InfinityStorage</a>, wurde der Kern
+      als eigenständige, wiederverwendbare Library herausgelöst.
+      Mit vier einfachen Funktionen lassen sich Dateien und Python-Objekte sicher hochladen und wieder abrufen.
+    </p>
+
+    <!-- ── 01 ── -->
+    <h3 style="margin-top:2rem; color: var(--accent, #fff); font-size:1rem; letter-spacing:.1em; text-transform:uppercase;">
+      <span style="opacity:.4; margin-right:.5rem;">01</span> Warum eine Library?
+    </h3>
+    <p>
+      InfinityStorage war eine vollständige Desktop-App. Die eigentliche Logik – verschlüsseln, aufteilen,
+      per Webhook hochladen – ist aber unabhängig von der GUI nützlich. InfinityStoreLib extrahiert genau
+      diesen Kern: eine saubere Python-API, die sich in jedes Projekt einbinden lässt, ohne die ganze
+      Oberfläche mitzuschleppen.
+    </p>
+
+    <!-- ── 02 ── -->
+    <h3 style="margin-top:2rem; color: var(--accent, #fff); font-size:1rem; letter-spacing:.1em; text-transform:uppercase;">
+      <span style="opacity:.4; margin-right:.5rem;">02</span> Die vier Kernfunktionen
+    </h3>
+    <p>
+      Die API besteht aus zwei Paaren: eines für Dateien, eines für Python-Objekte.
+      Jeder Upload gibt einen SHA-512-Hash zurück – das ist der eindeutige Schlüssel zum späteren Abruf.
+    </p>
+
+    <div class="code-block">
+<span class="kw">from</span> InfinityStoreLib <span class="kw">import</span> upload_location, download_location, upload_data, download_data
+<br>
+<span class="cm"># Datei hochladen → gibt SHA-512-Hash zurück</span>
+<br>
+file_hash = <span class="fn">upload_location</span>(<span class="st">"./meine_datei.zip"</span>)
+<br>
+<span class="cm"># Datei wieder herunterladen</span>
+<br>
+<span class="fn">download_location</span>(file_hash, <span class="st">"./ausgabe.zip"</span>)
+<br>
+<span class="cm"># Python-Objekt speichern</span>
+<br>
+data_hash = <span class="fn">upload_data</span>({"user": <span class="st">"fabota51"</span>, "score": 42})
+<br>
+<span class="cm"># Python-Objekt abrufen</span>
+<br>
+obj = <span class="fn">download_data</span>(data_hash)
+    </div>
+
+    <!-- ── 03 ── -->
+    <h3 style="margin-top:2rem; color: var(--accent, #fff); font-size:1rem; letter-spacing:.1em; text-transform:uppercase;">
+      <span style="opacity:.4; margin-right:.5rem;">03</span> Wie es intern funktioniert
+    </h3>
+    <p>
+      Unter der Haube läuft dieselbe Pipeline wie bei InfinityStorage:
+      Daten werden mit <code style="background:#111;padding:2px 6px;border-radius:3px;">pyAesCrypt</code> (AES-256)
+      verschlüsselt, in Blöcke von 5–7 MB aufgeteilt und über mehrere Discord-Webhooks verteilt.
+      Fake-Dateinamen (via <code style="background:#111;padding:2px 6px;border-radius:3px;">Faker</code>) verschleiern
+      die Inhalte. Ein lokaler Index speichert, welche Chunks auf welchen Webhooks liegen,
+      damit der Download die Stücke in der richtigen Reihenfolge zusammensetzen kann.
+      Der zurückgegebene SHA-512-Hash identifiziert die Datei eindeutig im Index.
+    </p>
+
+    <!-- ── 04 ── -->
+    <h3 style="margin-top:2rem; color: var(--accent, #fff); font-size:1rem; letter-spacing:.1em; text-transform:uppercase;">
+      <span style="opacity:.4; margin-right:.5rem;">04</span> Konfiguration
+    </h3>
+    <p>
+      Webhook-URLs werden entweder direkt im Code übergeben oder über eine YAML-Konfigurationsdatei eingelesen.
+      Die Library ist MIT-lizenziert und auf
+      <a href="https://github.com/fabota51/InfinityStoreLib" style="color:#82aaff;">GitHub</a> verfügbar.
+    </p>
+
+    <!-- ── Fazit ── -->
+    <h3 style="margin-top:2rem; color: var(--accent, #fff); font-size:1rem; letter-spacing:.1em; text-transform:uppercase;">
+      <span style="opacity:.4; margin-right:.5rem;">05</span> Fazit
+    </h3>
+    <p>
+      InfinityStoreLib ist der logische nächste Schritt nach InfinityStorage: Die Kernidee –
+      Discord als Speicher-Backend – als wiederverwendbares Werkzeug für andere Python-Projekte.
+      Vier Funktionen, null Server, volle Verschlüsselung.
+    </p>
+
+  </div>
+</div>
+
+<div data-include="../../components/footer.html"></div>
+
+</body>
+</html>

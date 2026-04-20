@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>InfinityStorage — Fabota51</title>
+  <link rel="stylesheet" href="../../css/style.css"/>
+  <script src="../../components/include.js" defer></script>
+  <style>
+    .subpage-content { grid-template-columns: 1fr !important; }
+    .subpage-body { max-width: 100%; }
+    .subpage-images { grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)) !important; }
+  </style>
+</head>
+<body>
+
+<div data-include="../../components/nav.html"></div>
+
+<div class="subpage-hero">
+  <img class="subpage-hero-img" src="../../images/InfinityStorage.png" alt="InfinityStorage Vorschau"/>
+  <div class="subpage-hero-overlay"></div>
+  <div class="subpage-hero-content">
+    <a href="/#archive" class="subpage-back">
+      <span class="subpage-back-arrow">←</span> Zurück zu Projekte
+    </a>
+    <span class="subpage-eyebrow">Python / CustomTkinter / Discord / Schulprojekt</span>
+    <h1 class="subpage-title">InfinityStorage</h1>
+  </div>
+</div>
+
+<div class="subpage-content">
+  <div class="subpage-meta">
+    <span class="subpage-tag">Python</span>
+    <span class="subpage-tag">CustomTkinter</span>
+    <span class="subpage-tag">Discord</span>
+    <span class="subpage-tag">AES-Verschlüsselung</span>
+    <span class="subpage-tag">Tor</span>
+    <span class="subpage-tag">File Sharing</span>
+    <span class="subpage-tag">Schulprojekt</span>
+    <span class="subpage-date">2025</span>
+  </div>
+
+  <div class="subpage-body">
+
+    <p>
+      InfinityStorage ist ein Schulprojekt in Python – eine Desktop-Anwendung, die Discord-Webhooks als
+      kostenlosen, unbegrenzten Cloud-Speicher nutzt. Dateien werden verschlüsselt, in Stücke aufgeteilt
+      und als Anhänge über Discord-Webhooks hochgeladen. Zum Abrufen werden die Stücke wieder zusammengesetzt
+      und entschlüsselt. Die GUI wurde mit
+      <code style="background:#111;padding:2px 6px;border-radius:3px;">CustomTkinter</code> gebaut,
+      die Metadaten in einer
+      <code style="background:#111;padding:2px 6px;border-radius:3px;">SQLite</code>-Datenbank verwaltet.
+    </p>
+
+    <!-- ── Schritt 1 ── -->
+    <h3 style="margin-top:2rem; color: var(--accent, #fff); font-size:1rem; letter-spacing:.1em; text-transform:uppercase;">
+      <span style="opacity:.4; margin-right:.5rem;">01</span> Die Idee
+    </h3>
+    <p>
+      Cloud-Speicher kostet Geld – aber Discord-Server sind kostenlos und haben kein Speicherlimit für Anhänge.
+      Die Idee war einfach: Discord als Backend missbrauchen. Dateien werden per Webhook hochgeladen und die
+      Attachment-URLs in einer lokalen Datenbank gespeichert. Damit lässt sich jede beliebige Datei sichern und
+      später wieder abrufen, ohne einen einzigen Server zu betreiben.
+    </p>
+
+    <!-- ── Schritt 2 ── -->
+    <h3 style="margin-top:2rem; color: var(--accent, #fff); font-size:1rem; letter-spacing:.1em; text-transform:uppercase;">
+      <span style="opacity:.4; margin-right:.5rem;">02</span> Upload – Verschlüsseln &amp; Verteilen
+    </h3>
+    <p>
+      Beim Upload durchläuft jede Datei eine feste Pipeline: Zuerst wird ein zufälliges Passwort generiert
+      und die Datei mit
+      <code style="background:#111;padding:2px 6px;border-radius:3px;">pyAesCrypt</code> (AES-256) verschlüsselt.
+      Dann wird ein SHA-512-Hash der Originaldatei berechnet, um die Integrität später prüfen zu können.
+      Anschließend wird die verschlüsselte Datei in mehrere Stücke (<em>Chunks</em>) aufgeteilt,
+      denen zufällige Fake-Namen gegeben werden, und über mehrere Discord-Webhooks verteilt.
+      Passwort, Hash und die Webhook-URLs der Stücke landen in der lokalen SQLite-Datenbank.
+    </p>
+
+    <div class="subpage-images" style="margin: 1.5rem 0;">
+      <img src="images/Bild2.png" alt="Upload-Pipeline: Verschlüsseln und Aufteilen"/>
+    </div>
+
+    <!-- ── Schritt 3 ── -->
+    <h3 style="margin-top:2rem; color: var(--accent, #fff); font-size:1rem; letter-spacing:.1em; text-transform:uppercase;">
+      <span style="opacity:.4; margin-right:.5rem;">03</span> Download – Zusammensetzen &amp; Prüfen
+    </h3>
+    <p>
+      Beim Download werden alle Stücke anhand der gespeicherten URLs von Discord geladen und in der richtigen
+      Reihenfolge zu einer Datei zusammengesetzt. Danach wird die Datei entschlüsselt und der SHA-512-Hash
+      verglichen – stimmt er nicht, wird die Datei verworfen. Nur wenn alles passt, wird die Datei an den
+      Zielpfad geschrieben.
+    </p>
+
+    <div class="subpage-images" style="margin: 1.5rem 0;">
+      <img src="images/Bild3.png" alt="Download-Pipeline: Entschlüsseln und Prüfen"/>
+    </div>
+
+    <!-- ── Schritt 4 ── -->
+    <h3 style="margin-top:2rem; color: var(--accent, #fff); font-size:1rem; letter-spacing:.1em; text-transform:uppercase;">
+      <span style="opacity:.4; margin-right:.5rem;">04</span> GUI &amp; Architektur
+    </h3>
+    <p>
+      Die Oberfläche wurde mit
+      <code style="background:#111;padding:2px 6px;border-radius:3px;">CustomTkinter</code> gebaut –
+      ein modernes Tkinter-Framework mit dunklem Design. Die Anwendung läuft multi-threaded: Ein Haupt-Worker
+      erledigt Upload/Download-Operationen, ein zweiter verwaltet die Datenbankzugriffe, und ein dritter
+      kümmert sich um GUI und System-Tray-Icon (via
+      <code style="background:#111;padding:2px 6px;border-radius:3px;">pystray</code>).
+      Alle Komponenten kommunizieren über Thread-sichere Queues.
+    </p>
+
+    <div class="subpage-images">
+      <img src="images/Bild1.png" alt="InfinityStorage – Datei-Explorer Ansicht"/>
+      <img src="images/File Explorer .png" alt="InfinityStorage – Datei-Explorer Detail"/>
+    </div>
+
+    <!-- ── Schritt 5 ── -->
+    <h3 style="margin-top:2rem; color: var(--accent, #fff); font-size:1rem; letter-spacing:.1em; text-transform:uppercase;">
+      <span style="opacity:.4; margin-right:.5rem;">05</span> Anonymität via Tor
+    </h3>
+    <p>
+      Alle Uploads und Downloads laufen optional über das
+      <code style="background:#111;padding:2px 6px;border-radius:3px;">Tor</code>-Netzwerk (via
+      <code style="background:#111;padding:2px 6px;border-radius:3px;">torpy</code>).
+      Das bedeutet: Kein Discord-Server sieht die echte IP-Adresse des Nutzers.
+      Zusätzlich bekommen alle hochgeladenen Chunks zufällige Fake-Namen (generiert mit
+      <code style="background:#111;padding:2px 6px;border-radius:3px;">Faker</code>) und werden in zufälliger
+      Größe verschickt – so lässt sich aus dem Traffic-Muster allein nicht ableiten, was übertragen wurde.
+    </p>
+
+    <!-- ── Schritt 6 ── -->
+    <h3 style="margin-top:2rem; color: var(--accent, #fff); font-size:1rem; letter-spacing:.1em; text-transform:uppercase;">
+      <span style="opacity:.4; margin-right:.5rem;">06</span> File Sharing
+    </h3>
+    <p>
+      Dateien können als verschlüsselte Share-Pakete exportiert und an andere Nutzer weitergegeben werden.
+      Das Paket enthält alle nötigen Metadaten – Chunk-URLs, Passwort und Hash – in verschlüsselter Form.
+      Der Empfänger importiert das Paket in seine eigene Instanz und kann die Datei von Discord herunterladen,
+      ohne selbst Zugang zu den Webhooks des Senders zu brauchen.
+    </p>
+
+    <!-- ── Video ── -->
+    <h3 style="margin-top:2rem; color: var(--accent, #fff); font-size:1rem; letter-spacing:.1em; text-transform:uppercase;">
+      <span style="opacity:.4; margin-right:.5rem;">07</span> Demo
+    </h3>
+    <video
+      controls
+      style="width:100%; border-radius:6px; margin-top:.75rem; background:#000;"
+      src="images/aufbau.mp4">
+      Dein Browser unterstützt das Video-Tag nicht.
+    </video>
+
+    <!-- ── Fazit ── -->
+    <h3 style="margin-top:2rem; color: var(--accent, #fff); font-size:1rem; letter-spacing:.1em; text-transform:uppercase;">
+      <span style="opacity:.4; margin-right:.5rem;">08</span> Fazit
+    </h3>
+    <p>
+      InfinityStorage hat gezeigt, wie man mit einfachen Mitteln – Python, Discord und etwas Kryptographie –
+      ein vollständiges Desktop-Programm baut. Das Projekt kombiniert Threading, Queue-basierte Architektur,
+      Datenbankzugriffe, Netzwerkanonymisierung und GUI-Entwicklung in einem realen Kontext.
+      Ein Schulprojekt, das mehr geworden ist als geplant.
+    </p>
+
+  </div>
+</div>
+
+<div data-include="../../components/footer.html"></div>
+
+</body>
+</html>
