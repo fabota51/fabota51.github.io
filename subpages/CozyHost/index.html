@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CozyHost — Fabota51</title>
+  <link rel="stylesheet" href="../../css/style.css"/>
+  <script src="../../components/include.js" defer></script>
+  <style>
+    .subpage-content { grid-template-columns: 1fr !important; }
+    .subpage-body { max-width: 100%; }
+    .subpage-images { grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)) !important; }
+  </style>
+</head>
+<body>
+
+<div data-include="../../components/nav.html"></div>
+
+<div class="subpage-hero">
+  <img class="subpage-hero-img" src="../../images/CozyHost.png" alt="CozyHost Vorschau"/>
+  <div class="subpage-hero-overlay"></div>
+  <div class="subpage-hero-content">
+    <a href="/#archive" class="subpage-back">
+      <span class="subpage-back-arrow">←</span> Zurück zu Projekte
+    </a>
+    <span class="subpage-eyebrow">PHP / Docker / MariaDB / Netbird / Schulprojekt</span>
+    <h1 class="subpage-title">CozyHost</h1>
+  </div>
+</div>
+
+<div class="subpage-content">
+  <div class="subpage-meta">
+    <span class="subpage-tag">PHP</span>
+    <span class="subpage-tag">Docker</span>
+    <span class="subpage-tag">MariaDB</span>
+    <span class="subpage-tag">Netbird</span>
+    <span class="subpage-tag">Minecraft</span>
+    <span class="subpage-tag">Server-Hosting</span>
+    <span class="subpage-tag">Schulprojekt</span>
+    <span class="subpage-date">2026</span>
+  </div>
+
+  <div class="subpage-body">
+
+    <p>
+      CozyHost ist ein Schulprojekt – ein selbst gebautes Minecraft-Server-Hosting-Panel aus PHP, Docker und
+      <code style="background:#111;padding:2px 6px;border-radius:3px;">Netbird</code>.
+      Das Projekt entstand unter extremem Zeitdruck: Theoretisch standen die Winterferien plus zwei Wochen danach zur Verfügung –
+      die eigentliche Umsetzung passierte dann in genau diesen letzten zwei Wochen.
+      Das Ergebnis ist ein Proof-of-Concept, welcher mit viel Klebeband zusammenhält.
+    </p>
+
+    <!-- ── 01 ── -->
+    <h3 style="margin-top:2rem; color: var(--accent, #fff); font-size:1rem; letter-spacing:.1em; text-transform:uppercase;">
+      <span style="opacity:.4; margin-right:.5rem;">01</span> Die Idee
+    </h3>
+    <p>
+      Freunde sollen per Klick einen eigenen Minecraft-Server starten können – ohne Port-Forwarding,
+      ohne statische IP, ohne offene Firewall. Das Panel legt für jeden Server automatisch eine
+      Netbird-Adresse an und regelt den Zugriff darüber: Nur eingeladene Nutzer kommen durch.
+      Im Hintergrund läuft alles in Docker-Containern, die das Panel direkt über die Docker-API spawnt.
+      Das Ganze Projekt kann über einen einziges Docker-Compose-File gestartet werden, welches alle Services (Panel, MariaDB, Minecraft-Server) hochzieht.
+    </p>
+
+    <div class="subpage-images" style="margin: 1.5rem 0;">
+      <img src="images/Screenshot 2026-04-21 195530.png" alt="CozyHost – Login"/>
+      <img src="images/Screenshot 2026-04-21 195630.png" alt="CozyHost – Dashboard"/>
+    </div>
+
+    <!-- ── 02 ── -->
+    <h3 style="margin-top:2rem; color: var(--accent, #fff); font-size:1rem; letter-spacing:.1em; text-transform:uppercase;">
+      <span style="opacity:.4; margin-right:.5rem;">02</span> Wie es funktioniert
+    </h3>
+    <p>
+      Das Backend ist ein PHP-Frontend, das in einem eigenen Docker-Container läuft und mit drei weiteren
+      Services kommuniziert: einer
+      <code style="background:#111;padding:2px 6px;border-radius:3px;">MariaDB</code>-Datenbank
+      für Nutzer- und Serverdaten sowie der lokalen
+      <code style="background:#111;padding:2px 6px;border-radius:3px;">Docker API</code>
+      (über den freigegebenen Socket), um neue Minecraft-Container zu starten, zu stoppen und zu verwalten.
+      Für das Netzwerk spricht das Panel direkt gegen die
+      <code style="background:#111;padding:2px 6px;border-radius:3px;">Netbird REST-API</code>:
+      Pro Server wird eine eigene Netbird-Gruppe angelegt, ein Setup-Key generiert und eine Zugriffsrichtlinie
+      erstellt – so kommt nur der berechtigte Nutzer an seinen Server.
+    </p>
+
+    <div class="subpage-images" style="margin: 1.5rem 0;">
+      <img src="images/Screenshot 2026-04-21 195849.png" alt="Server Management – neuen Server anlegen"/>
+      <img src="images/Screenshot 2026-04-21 200030.png" alt="Server Management – Server läuft"/>
+      <img src="images/Screenshot 2026-04-21 200050.png" alt="Docker – laufende Container"/>
+    </div>
+
+    <!-- ── 03 ── -->
+    <h3 style="margin-top:2rem; color: var(--accent, #fff); font-size:1rem; letter-spacing:.1em; text-transform:uppercase;">
+      <span style="opacity:.4; margin-right:.5rem;">03</span> Nutzerverwaltung &amp; Profil
+    </h3>
+    <p>
+      Das Panel kennt genau einen Admin-Account, der über die Oberfläche neue Netbird-Nutzer anlegen und
+      deren Zugriff auf einzelne Server steuern kann. Jeder Nutzer existiert dabei als eigene Gruppe im
+      Netbird-Netzwerk – der Admin entscheidet, welche Nutzergruppe welchen Server erreichen darf.
+      Auf der Profilseite lässt sich der persönliche Netbird-API-Token hinterlegen und das Passwort ändern.
+    </p>
+
+    <div class="subpage-images" style="margin: 1.5rem 0;">
+      <img src="images/Screenshot 2026-04-21 200958.png" alt="User Management"/>
+      <img src="images/Screenshot 2026-04-21 195702.png" alt="Profil – Netbird-Konfiguration"/>
+    </div>
+
+    <!-- ── 04 ── -->
+    <h3 style="margin-top:2rem; color: var(--accent, #fff); font-size:1rem; letter-spacing:.1em; text-transform:uppercase;">
+      <span style="opacity:.4; margin-right:.5rem;">04</span> Aktueller Stand &amp; Einschränkung
+    </h3>
+    <p>
+      CozyHost funktioniert – solange alle Mitspieler den Netbird-Client installiert haben.
+      Über das Overlay-Netzwerk erreichen sie den Server direkt, ohne Port-Forwarding oder offene Firewall.
+      Was aktuell nicht geht: den Server öffentlich zugänglich machen. Netbird-Reverse-Proxies unterstützen
+      bisher nur HTTP-Traffic – einen Minecraft-Server (TCP) darüber nach außen durchzureichen ist damit
+      noch nicht möglich. Wer keinen Netbird-Client hat, kann also noch nicht joinen.
+    </p>
+    <p>
+      Der Plan: warten, bis Netbird den nötigen Traffic-Support nachrüstet. Dann soll kein
+      komplettes VM-System mehr gebaut werden – stattdessen ist ein Plugin für
+      <code style="background:#111;padding:2px 6px;border-radius:3px;">PelicanPanel</code>
+      geplant, das Netbird direkt auf den Wings installiert, Adressen automatisch vergibt und das
+      Port-Forwarding übernimmt. Sauberer, kleiner, wartbarer.
+    </p>
+
+    <!-- ── 05 ── -->
+    <h3 style="margin-top:2rem; color: var(--accent, #fff); font-size:1rem; letter-spacing:.1em; text-transform:uppercase;">
+      <span style="opacity:.4; margin-right:.5rem;">05</span> Fazit
+    </h3>
+    <p>
+      CozyHost ist kein fertiges Produkt. Es ist ein Schulprojekt, das in zwei Wochen entstand,
+      die Kernidee beweist und genau so aussieht. Die Architektur zeigt, wohin es gehen soll –
+      und sobald Netbird die Lücke schließt, wird aus dem Klebeband-Konstrukt hoffentlich etwas Vernünftiges.
+    </p>
+
+  </div>
+</div>
+
+<div data-include="../../components/footer.html"></div>
+
+</body>
+</html>
